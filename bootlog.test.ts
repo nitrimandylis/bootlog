@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { compose, findRepos, format, parseLog, seedFrom, stamps, type Repo } from "./bootlog.ts";
+import { compose, findRepos, format, parseLog, seedFrom, short, stamps, type Repo } from "./bootlog.ts";
 
 const log =
   "\x014a1b2c3\x1fadd the watch loop\n" +
@@ -92,6 +92,14 @@ test("an active repo is mounted, a quiet one is listed as idle", () => {
   expect(text).toContain("idle: 1 volume saw no writes (kalimera)");
   expect(text).toContain("2 uncommitted files");
   expect(text).toContain("reached target Daily Work (1 commit across 1 repo, +812 -13)");
+});
+
+test("a mount path under home is abbreviated, one outside it is not", () => {
+  const home = process.env.HOME ?? "";
+  expect(short(`${home}/cc/bootlog`)).toBe("~/cc/bootlog");
+  expect(short(home)).toBe("~");
+  expect(short("/opt/src/bootlog")).toBe("/opt/src/bootlog");
+  expect(short(`${home}-backup/cc`)).toBe(`${home}-backup/cc`); // a sibling directory is not home
 });
 
 test("a day with no commits says so instead of claiming success quietly", () => {

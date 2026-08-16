@@ -181,6 +181,14 @@ export function stamps(seed: number, count: number): number[] {
   return out;
 }
 
+// Display only: the JSON keeps absolute paths. A mount line is long enough
+// without spelling out the home directory on every one of them.
+export function short(p: string): string {
+  const home = process.env.HOME || homedir();
+  if (p === home) return "~";
+  return p.startsWith(home + "/") ? "~" + p.slice(home.length) : p;
+}
+
 export function compose(repos: Repo[], config: Config, since: string, now: Date, host: string, user: string): Line[] {
   const active = repos.filter((r) => r.commits.length > 0);
   const idle = repos.filter((r) => r.commits.length === 0);
@@ -198,7 +206,7 @@ export function compose(repos: Repo[], config: Config, since: string, now: Date,
   lines.push({ level: "ok", text: `probe: ${repos.length} ${repos.length === 1 ? "volume" : "volumes"} detected` });
 
   for (const repo of active) {
-    lines.push({ level: "ok", text: `mount: ${repo.name} on ${repo.path} type git (branch ${repo.branch})` });
+    lines.push({ level: "ok", text: `mount: ${repo.name} on ${short(repo.path)} type git (branch ${repo.branch})` });
     lines.push({
       level: "ok",
       text: `${repo.name}: ${repo.commits.length} ${repo.commits.length === 1 ? "commit" : "commits"}, +${repo.insertions} -${repo.deletions}`,

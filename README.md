@@ -19,6 +19,10 @@
 ![facts](https://img.shields.io/badge/lines_that_are_real-all_of_them-FF8000?style=flat-square&labelColor=111111)
 ![uptime](https://img.shields.io/badge/uptime-since_you_woke_up-111111?style=flat-square&labelColor=111111)
 
+![bootlog](.github/assets/bootlog.gif)
+
+*recorded against `tapes/fixture.ts`, so those repos are invented; the log is not*
+
 </div>
 
 ---
