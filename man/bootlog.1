@@ -1,0 +1,79 @@
+.TH BOOTLOG 1 "2026-08-16" "bootlog 0.1.0" "User Commands"
+.SH NAME
+bootlog \- narrate today's git activity as an operating system boot log
+.SH SYNOPSIS
+.B bootlog
+[\fB\-\-since\fR \fIEXPR\fR] [\fB\-\-speed\fR \fIMS\fR]
+[\fB\-\-json\fR] [\fB\-\-no\-color\fR]
+.SH DESCRIPTION
+Scans the configured roots for git repositories, reads what happened in them
+today, and prints it in the shape of a kernel boot log: mounted volumes for
+repositories with commits, warnings for uncommitted files, and a final target
+line with the totals.
+.PP
+The framing is fiction; the facts are not. Every line comes from
+.BR git (1)
+run against a repository that exists on disk. A day with no commits says so
+rather than inventing activity.
+.PP
+Timings in the left column are generated from the date, so the same day always
+renders the same log. They are not measurements of anything.
+.SH OPTIONS
+.TP
+.BI \-\-since " EXPR"
+How far back to look. Any git date expression, e.g.
+.IR midnight ", " "\(dq2 days ago\(dq" ", " yesterday .
+Default
+.IR midnight ,
+which is today.
+.TP
+.BI \-\-speed " MS"
+Milliseconds between lines when printing to a terminal. Default 25. Use 0 for
+instant. Output that is piped or redirected is always instant.
+.TP
+.B \-\-json
+Print one JSON object on stdout and nothing else.
+.TP
+.B \-\-no\-color
+Plain text. Colour is also suppressed when stdout is not a terminal or when
+.B NO_COLOR
+is set.
+.TP
+.BR \-h ", " \-\-help
+Show help. Works in any argument position.
+.SH FILES
+.TP
+.I ~/.config/bootlog/config.json
+Written with defaults on first run.
+.I roots
+is the list of directories to scan (\(dq~\(dq is expanded, and a root that does
+not exist is skipped),
+.I depth
+how many levels below each root to descend before giving up,
+.I author
+an optional git author filter (empty means every author), and
+.I os
+the name printed on the first line.
+.SH JSON OUTPUT
+One object:
+.PP
+.RS
+{ "generated", "since", "os", "host", "user",
+.br
+"repos": [ ... ], "totals": { ... } }
+.RE
+.PP
+Each repo is
+.IR name ", " path ", " branch ", " dirty " (uncommitted file count), "
+.IR commits ", " insertions ", " deletions .
+Each commit is
+.IR hash ", " subject ", " insertions ", " deletions ;
+a merge commit reports 0 and 0 rather than repeating the previous commit's
+numbers. Totals are
+.IR repos ", " active ", " commits ", " insertions ", " deletions .
+.SH EXIT STATUS
+0 on success, including a day with no commits. 1 when git is missing, when no
+configured root exists, or on an unknown flag.
+.SH SEE ALSO
+.BR git (1),
+.BR git\-log (1)

@@ -1,0 +1,11 @@
+{
+  "name": "bootlog",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "bin": { "bootlog": "./bootlog.ts" },
+  "scripts": {
+    "compile": "bun build --compile bootlog.ts --outfile ~/.bun/bin/bootlog && mkdir -p $(brew --prefix)/share/man/man1 && cp man/bootlog.1 $(brew --prefix)/share/man/man1/"
+  },
+  "devDependencies": { "@types/bun": "^1.3.14" }
+}
