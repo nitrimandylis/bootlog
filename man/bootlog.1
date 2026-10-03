@@ -46,14 +46,15 @@ Show help. Works in any argument position.
 .I ~/.config/bootlog/config.json
 Written with defaults on first run.
 .I roots
-is the list of directories to scan (\(dq~\(dq is expanded, and a root that does
-not exist is skipped),
+is the list of directories to scan (default ~/Developer, ~/cc, ~/code, ~/src,
+~/.dotfiles; \(dq~\(dq is expanded, and a root that does not exist is skipped),
 .I depth
-how many levels below each root to descend before giving up,
+how many levels below each root to descend before giving up (default 3),
 .I author
-an optional git author filter (empty means every author), and
+an optional git author filter (default empty, meaning every author), and
 .I os
-the name printed on the first line.
+the name printed on the first line (default
+.IR breakOS ).
 .SH JSON OUTPUT
 One object:
 .PP
@@ -73,7 +74,9 @@ numbers. Totals are
 .IR repos ", " active ", " commits ", " insertions ", " deletions .
 .SH EXIT STATUS
 0 on success, including a day with no commits. 1 when git is missing, when no
-configured root exists, or on an unknown flag.
+configured root exists, on an unknown flag, or when
+.B \-\-speed
+is negative or not a number.
 .SH SEE ALSO
 .BR git (1),
 .BR git\-log (1)

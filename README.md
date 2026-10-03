@@ -55,6 +55,8 @@ nick@bootlog:~$ bootlog
 | 05 | **warn** | uncommitted file counts, per repo, from `git status --porcelain` |
 | 06 | **reached target** | commits, repos touched, insertions and deletions for the day |
 | 07 | **`--since`** | any git date expression, so `--since "3 days ago"` boots a longer day |
+| 08 | **`--json`** | one object on stdout instead of the log, nothing else |
+| 09 | **`--no-color`** | plain text with no ANSI colour. Also the default when stdout is not a terminal or `NO_COLOR` is set |
 
 ## 🚀 Run it
 
@@ -69,6 +71,15 @@ man bootlog       # full reference, offline
 ```
 
 Edit `roots` in the config to point at wherever your code lives. Anything that does not exist is skipped, so leaving the defaults in costs nothing. `--speed 0` kills the typing animation; piping it anywhere does that for you.
+
+The config has four keys:
+
+| key | default | what it does |
+|---|---|---|
+| `roots` | `["~/Developer", "~/cc", "~/code", "~/src", "~/.dotfiles"]` | directories to scan for git repos |
+| `depth` | `3` | how many levels below each root to descend |
+| `author` | `""` | git author filter, empty means every author |
+| `os` | `"breakOS"` | the name printed on the first line |
 
 ## 🔩 Under the hood
 
