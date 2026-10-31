@@ -1,14 +1,16 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 // bootlog - narrates today's git activity as an operating system boot log.
 // Every line is real: the repos are found on disk, the commits come from git.
 // Only the framing is fiction.
 
 import { parseArgs } from "node:util";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { homedir, hostname, userInfo } from "node:os";
-import { basename, join } from "node:path";
+import { basename, delimiter, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 const CONFIG_DIR = join(homedir(), ".config", "bootlog");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
@@ -107,9 +109,26 @@ export type Repo = {
 };
 
 function git(cwd: string, args: string[]): string {
-  const proc = Bun.spawnSync(["git", "-C", cwd, ...args], { stdout: "pipe", stderr: "pipe" });
-  if (proc.exitCode !== 0) return "";
-  return proc.stdout.toString();
+  // Node caps captured output at 1 MB by default and reports a failure past it,
+  // which would turn a long --since into silent empty repos. 64 MB is plenty.
+  const proc = spawnSync("git", ["-C", cwd, ...args], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  if (proc.status !== 0) return "";
+  return proc.stdout;
+}
+
+// True when an executable called `name` sits in one of the PATH directories.
+function onPath(name: string): boolean {
+  const dirs = (process.env.PATH ?? "").split(delimiter);
+  for (const dir of dirs) {
+    if (dir === "") continue;
+    const candidate = join(dir, name);
+    try {
+      if (statSync(candidate).isFile()) return true;
+    } catch {
+      // not in this directory, try the next one
+    }
+  }
+  return false;
 }
 
 const SHORTSTAT = /(\d+) insertion|(\d+) deletion/g;
@@ -279,7 +298,7 @@ async function main() {
     process.exit(1);
   }
 
-  if (!Bun.which("git")) {
+  if (!onPath("git")) {
     console.error("bootlog: git is not on PATH, and there is nothing to read without it");
     process.exit(1);
   }
@@ -331,7 +350,20 @@ async function main() {
   }
 }
 
-if (import.meta.main) {
+// Run main only when this file is the program, not when the tests import it.
+// Both sides go through realpath because a global install (npm i -g, bun add -g)
+// starts the program through a symlink in a bin directory.
+function isProgram(): boolean {
+  const started = process.argv[1];
+  if (!started) return false;
+  try {
+    return realpathSync(started) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isProgram()) {
   main().catch((err) => {
     console.error(`bootlog: ${(err as Error).message}`);
     process.exit(1);
