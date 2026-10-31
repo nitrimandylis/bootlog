@@ -1,6 +1,6 @@
 {
   "name": "@nitrimandylis/bootlog",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Narrates today's git activity across your repos as an operating system boot log",
   "type": "module",
   "bin": {

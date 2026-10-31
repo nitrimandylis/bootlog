@@ -10,7 +10,7 @@ import { homedir, hostname, userInfo } from "node:os";
 import { basename, delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 const CONFIG_DIR = join(homedir(), ".config", "bootlog");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
