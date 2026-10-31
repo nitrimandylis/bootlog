@@ -4,3 +4,4 @@ node_modules/
 *.local
 bootlog
 tapes/fixtures/
+dist/

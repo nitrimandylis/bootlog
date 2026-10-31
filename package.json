@@ -1,11 +1,51 @@
 {
-  "name": "bootlog",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@nitrimandylis/bootlog",
+  "version": "0.2.0",
+  "description": "Narrates today's git activity across your repos as an operating system boot log",
+  "type": "module",
+  "bin": {
+    "bootlog": "dist/bootlog.js"
+  },
+  "files": [
+    "dist",
+    "man",
+    "README.md",
+    "LICENSE"
+  ],
+  "man": [
+    "man/bootlog.1"
+  ],
+  "keywords": [
+    "git",
+    "dmesg",
+    "boot-log",
+    "terminal",
+    "productivity",
+    "cli"
+  ],
+  "author": "nitrimandylis",
   "license": "MIT",
-  "bin": { "bootlog": "./bootlog.ts" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitrimandylis/bootlog.git"
+  },
+  "homepage": "https://github.com/nitrimandylis/bootlog#readme",
+  "bugs": "https://github.com/nitrimandylis/bootlog/issues",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "build": "bun build bootlog.ts --target=node --format=esm --outfile dist/bootlog.js",
+    "prepack": "bun run build",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
     "compile": "bun build --compile bootlog.ts --outfile ~/.bun/bin/bootlog && mkdir -p $(brew --prefix)/share/man/man1 && cp man/bootlog.1 $(brew --prefix)/share/man/man1/"
   },
-  "devDependencies": { "@types/bun": "^1.3.14" }
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
