@@ -1,4 +1,4 @@
-.TH BOOTLOG 1 "2026-08-16" "bootlog 0.1.0" "User Commands"
+.TH BOOTLOG 1 "2026-10-31" "bootlog 0.2.0" "User Commands"
 .SH NAME
 bootlog \- narrate today's git activity as an operating system boot log
 .SH SYNOPSIS
@@ -77,6 +77,22 @@ numbers. Totals are
 configured root exists, on an unknown flag, or when
 .B \-\-speed
 is negative or not a number.
+.SH INSTALLATION
+Requires Node 22 or later and
+.BR git (1)
+on PATH.
+.PP
+.RS
+npx @nitrimandylis/bootlog
+.br
+npm i \-g @nitrimandylis/bootlog
+.br
+bun add \-g @nitrimandylis/bootlog
+.RE
+.PP
+A global npm install puts this page in the manpath. From a clone,
+.B bun run compile
+builds a binary to ~/.bun/bin/bootlog and installs this page.
 .SH SEE ALSO
 .BR git (1),
 .BR git\-log (1)

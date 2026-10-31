@@ -32,6 +32,15 @@ dashboard: it prints once and exits.
   common code directories so the tool does something on a machine that is not
   mine. All five missing is the error, and it names the config file.
 - **No network, no cache, no state beyond the config file.** git is the database.
+- **Shipped to npm from 0.2.0, as `@nitrimandylis/bootlog`.** The shipped code
+  uses Node APIs only (`node:child_process` for git, a PATH scan instead of
+  `Bun.which`, a realpath check instead of `import.meta.main`), so it runs under
+  plain Node 22+ via `npx`. Bun stays the toolchain: `bun build` bundles
+  `dist/bootlog.js`, `bun test` runs the tests, `bun run compile` still builds a
+  local binary.
+- **Releases go through a GitHub release.** `publish.yml` publishes with OIDC
+  trusted publishing, no token in the repo. 0.2.0 is published by hand, because
+  npm cannot attach a trusted publisher to a package that does not exist yet.
 
 ## Not doing
 
@@ -43,4 +52,4 @@ dashboard: it prints once and exits.
 
 ## Status
 
-Built 2026-08-16.
+Built 2026-08-16. Ported to Node and packaged for npm 2026-10-31 (0.2.0).

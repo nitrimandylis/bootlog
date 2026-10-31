@@ -13,7 +13,7 @@
 
 *scans your repos, reads today's commits, prints them as a kernel boot log*
 
-![bun](https://img.shields.io/badge/runtime-bun-FF8000?style=flat-square&labelColor=111111)
+![node](https://img.shields.io/badge/runtime-node_22+-FF8000?style=flat-square&labelColor=111111)
 ![deps](https://img.shields.io/badge/dependencies-0-00B894?style=flat-square&labelColor=111111)
 ![network](https://img.shields.io/badge/network_calls-0-00B894?style=flat-square&labelColor=111111)
 ![facts](https://img.shields.io/badge/lines_that_are_real-all_of_them-FF8000?style=flat-square&labelColor=111111)
@@ -37,7 +37,7 @@ It makes no network calls, writes nothing except its own config file, and reads 
 
 ```console
 nick@bootlog:~$ bootlog
-[   0.008495] breakOS 0.1.0 (nick@Nicks-MacBook-Pro.local) #16 Sun Aug 16 2026
+[   0.008495] breakOS 0.2.0 (nick@Nicks-MacBook-Pro.local) #16 Sun Aug 16 2026
 [   0.408409] probe: 3 volumes detected
 [   1.039634] .dotfiles: 2 commits, +61 -60
 [   1.499393] idle: 2 volumes saw no writes (ai-detect, ia-graph)
@@ -60,14 +60,24 @@ nick@bootlog:~$ bootlog
 
 ## 🚀 Run it
 
-Needs [Bun](https://bun.sh) and `git`. No account, no network.
+Needs Node 22+ and `git`. No account, no network.
+
+```bash
+npx @nitrimandylis/bootlog          # try it without installing
+npm i -g @nitrimandylis/bootlog     # or install it globally
+bun add -g @nitrimandylis/bootlog   # or with Bun
+bootlog                             # writes ~/.config/bootlog/config.json on first run
+man bootlog                         # full reference, offline (npm i -g installs it)
+```
+
+To build from source instead, with [Bun](https://bun.sh):
 
 ```bash
 git clone https://github.com/nitrimandylis/bootlog.git
 cd bootlog
-bun run compile   # → ~/.bun/bin/bootlog, and man bootlog into your manpath
-bootlog           # writes ~/.config/bootlog/config.json on first run
-man bootlog       # full reference, offline
+bun install
+bun bootlog.ts      # run straight from source
+bun run compile     # or compile a binary to ~/.bun/bin/bootlog and install the man page
 ```
 
 Edit `roots` in the config to point at wherever your code lives. Anything that does not exist is skipped, so leaving the defaults in costs nothing. `--speed 0` kills the typing animation; piping it anywhere does that for you.
@@ -96,13 +106,13 @@ flowchart LR
 
 | layer | path | job |
 |---|---|---|
-| cli | `bootlog.ts` | config, the walk, the git calls, printing |
+| cli | `bootlog.ts` | config, the walk, the git calls, printing. Built to `dist/bootlog.js` for npm |
 | discovery | `findRepos()` | takes its filesystem as two functions, which is why it is testable |
 | parsing | `parseLog()` | commits and per-commit stats, merges included |
 | writing | `compose()`, `format()`, `stamps()` | the log lines and the fake clock, both pure |
-| reference | `man/bootlog.1` | hand-written, installed by `bun run compile` |
+| reference | `man/bootlog.1` | hand-written, installed by `npm i -g` or `bun run compile` |
 
-**Stack:** Bun · TypeScript · git · zero runtime dependencies
+**Stack:** TypeScript · Node stdlib only · git · Bun to build and test · zero runtime dependencies
 
 ---
 
